@@ -1,8 +1,3 @@
-extern unsigned int VAO;
-extern unsigned int EBO;
-
-void InitVertices();
-
 #ifndef SHADER_H
 #define SHADER_H
 

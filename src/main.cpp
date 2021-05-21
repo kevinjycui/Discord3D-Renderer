@@ -1,8 +1,11 @@
 #include "../include/main.h"
+#include "../include/vertices.h"
 #include "../include/shader.h"
+#include "../include/texture.h"
 
 #define WIDTH 800
 #define HEIGHT 600
+
 
 int main()
 {
@@ -30,6 +33,7 @@ int main()
 	InitVertices();
 
 	Shader shader("shaders/shader.vs", "shaders/shader.fs");
+	GenerateTexture();
 
 	while(!glfwWindowShouldClose(window)) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -38,7 +42,17 @@ int main()
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
+		unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
+
+		glm::mat4 trans = glm::mat4(1.0f);
+		trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));  
+		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+		
 		shader.use();
+		glBindTexture(GL_TEXTURE_2D, texture);
+
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
