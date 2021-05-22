@@ -10,5 +10,7 @@ extern glm::mat4 model;
 extern glm::mat4 view;
 extern glm::mat4 projection;
 
+extern glm::vec3 cubePositions[];
+
 void LoadModel();
 void InitVertices();
