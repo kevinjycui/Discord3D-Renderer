@@ -13,10 +13,8 @@ extern GLFWwindow* window;
 extern Shader shader;
 
 extern int img_index;
-extern char * pixelData;
-
-extern GLsizei nrChannels;
-extern GLsizei stride;
-extern GLsizei bufferSize;
-
 extern char pixels[2880000];
+
+extern int movement;
+extern int angle;
+extern int zoom;

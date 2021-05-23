@@ -4,9 +4,10 @@
 #include "../include/texture.h"
 
 #include "../include/main_socket.h"
+#include "../include/camera.h"
 
 
-#define FRAMES_PER_REQ 20
+#define FRAMES_PER_REQ 3
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);  
 
@@ -14,16 +15,20 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 GLFWwindow* window;
 Shader shader;
 
-GLsizei nrChannels = 3;
-GLsizei stride = nrChannels * WIDTH + ((nrChannels * WIDTH % 4) ? (4 - nrChannels * WIDTH % 4) : 0);
-GLsizei bufferSize = stride * HEIGHT;
-std::vector<char> buffer(bufferSize);
-
 int img_index;
 float _clock;
-char * pixelData;
 char pixels[2880000];
 
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+
+Camera camera(cameraPos, cameraFront);
+
+int movement = 0;
+int angle = 0;
+int zoom = 0;
+
+void processInput(int movement, int angle, int zoom);
 
 int gl_Init()
 {
@@ -76,22 +81,24 @@ int gl_Loop()
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
+	processInput(movement, angle, zoom);
 
 	LoadModel();
 
 	shader.setMat4("model", model);
-	shader.setMat4("view", view);
 	shader.setMat4("projection", projection);
 
-	unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
+	view = camera.GetViewMatrix();
 
-	glm::mat4 trans = glm::mat4(1.0f);
-	// trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));  
-	trans = glm::rotate(trans, /*(float) glfwGetTime()*/ _clock * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+	shader.setMat4("view", view);
 	
-	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+	// unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
+
+	// glm::mat4 trans = glm::mat4(1.0f);
+	// // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));  
+	// trans = glm::rotate(trans, /*(float) glfwGetTime()*/ _clock * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+	
+	// glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 	
 	shader.use();
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -122,7 +129,7 @@ int gl_Loop()
 
 	glPixelStorei(GL_PACK_ALIGNMENT, 4);
 	glReadBuffer(GL_FRONT);	
-	glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
+	// glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
 	glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 	
 	// std::ostringstream ss;
@@ -159,4 +166,25 @@ int gl_Loop()
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
-}  
+}
+
+void processInput(int movement, int angle, int zoom)
+{
+	std::cout << movement << '\n';
+	if (movement >= 8) {
+		movement -= 8;
+		camera.ProcessMovement(RIGHT, 0.1f);
+	}
+	if (movement >= 4) {
+		movement -= 4;
+		camera.ProcessMovement(BACKWARD, 0.1f);
+	}
+	if (movement >= 2) {
+		movement -= 2;
+		camera.ProcessMovement(FORWARD, 0.1f);
+	}
+	if (movement >= 1) {
+		movement -= 1;
+		camera.ProcessMovement(LEFT, 0.1f);
+	}
+}

@@ -26,7 +26,15 @@ void on_message(server* s, websocketpp::connection_hdl hdl, server::message_ptr 
     rapidjson::Document d;
     d.Parse(msg->get_payload().c_str());
 
-    rapidjson::Value& action = d["action"];
+    rapidjson::Value& movementValue = d["movement"];
+    rapidjson::Value& angleValue = d["angle"];
+    rapidjson::Value& zoomValue = d["zoom"];
+
+    if (movementValue != NULL) {
+        movement = movementValue.GetInt();
+        angle = angleValue.GetInt();
+        zoom = zoomValue.GetInt();
+    }
 
     int rt = gl_Loop();
 
