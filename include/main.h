@@ -18,9 +18,6 @@
 
 #include <stb/stb_image_write.h>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);  
-
-
 // struct float2
 // {
 // 	float2(float _x = 0.0f, float _y = 0.0f): x(_x), y(_y) {}

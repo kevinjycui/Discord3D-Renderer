@@ -1,1 +1,8 @@
 main
+frames/*
+*.gif
+
+*/env/
+.vscode/
+
+*/credentials.txt
