@@ -3,6 +3,6 @@ frames/*
 *.gif
 
 */env/
-.vscode/
+.vscode/*
 
 */credentials.txt
