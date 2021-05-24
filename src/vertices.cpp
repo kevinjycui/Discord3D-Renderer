@@ -82,13 +82,13 @@ GLuint EBO;
 // GLuint fragmentShader;
 // GLuint shaderProgram;
 
-void LoadModel()
-{
-	// model = glm::rotate(glm::mat4(1.0f), glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); //transform model to world view
-	// model = glm::rotate(glm::mat4(1.0f), (float) glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); //transform model to world view rotate
-	// view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)); //create view matrix
-	projection = glm::perspective(glm::radians(45.0f), 800.0f/600.0f, 0.1f, 100.0f); //perspective projection matrix for clip
-}
+// void LoadModel()
+// {
+// 	model = glm::rotate(glm::mat4(1.0f), glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); //transform model to world view
+// 	// model = glm::rotate(glm::mat4(1.0f), (float) glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); //transform model to world view rotate
+// 	view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)); //create view matrix
+// 	projection = glm::perspective(glm::radians(45.0f), 800.0f/600.0f, 0.1f, 100.0f); //perspective projection matrix for clip
+// }
 
 void InitVertices()
 {

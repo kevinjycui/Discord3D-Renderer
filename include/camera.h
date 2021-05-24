@@ -21,7 +21,7 @@ enum Zoom_Movement {
 
 const float YAW         = -90.0f;
 const float PITCH       =  0.0f;
-const float SPEED       =  4.0f;
+const float SPEED       =  2.5f;
 const float SENSITIVITY =  0.1f;
 const float ZOOM        =  45.0f;
 
@@ -35,6 +35,9 @@ public:
     glm::vec3 Right;
     glm::vec3 WorldUp;
 
+    glm::vec3 InitPosition;
+    glm::vec3 InitUp;
+
     float Yaw;
     float Pitch;
 
@@ -44,18 +47,28 @@ public:
 
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
     {
-        Position = position;
-        WorldUp = up;
+        Position = InitPosition = position;
+        WorldUp = InitUp = up;
         Yaw = yaw;
         Pitch = pitch;
         updateCameraVectors();
     }
     Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
     {
-        Position = glm::vec3(posX, posY, posZ);
-        WorldUp = glm::vec3(upX, upY, upZ);
+        Position = InitPosition = glm::vec3(posX, posY, posZ);
+        WorldUp = InitUp = glm::vec3(upX, upY, upZ);
         Yaw = yaw;
         Pitch = pitch;
+        updateCameraVectors();
+    }
+
+    void ResetPosition()
+    {
+        Position = InitPosition;
+        WorldUp = InitUp;
+        Yaw = YAW;
+        Pitch = PITCH;
+        Zoom = ZOOM;
         updateCameraVectors();
     }
 
@@ -81,13 +94,24 @@ public:
     {
         float velocity = MovementSpeed * deltaTime;
         if (direction == FORWARD)
-            Pitch += velocity;
-        if (direction == BACKWARD)
-            Pitch -= velocity;
-        if (direction == LEFT)
             Yaw -= velocity;
-        if (direction == RIGHT)
+        if (direction == BACKWARD)
             Yaw += velocity;
+        if (direction == LEFT)
+            Pitch += velocity;
+        if (direction == RIGHT)
+            Pitch -= velocity;
+
+        if (Yaw > 89.0f)
+            Yaw = 89.0f;
+        if (Yaw < -89.0f)
+            Yaw = -89.0f;
+
+        glm::vec3 result;
+        result.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+        result.y = sin(glm::radians(Pitch));
+        result.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+        Front = glm::normalize(result);
     }
 
     void ProcessZoom(Zoom_Movement direction, float deltaTime)

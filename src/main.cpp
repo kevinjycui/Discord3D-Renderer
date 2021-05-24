@@ -7,7 +7,7 @@
 #include "../include/camera.h"
 
 
-#define FRAMES_PER_REQ 3
+#define FRAMES_PER_REQ 20
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);  
 
@@ -83,13 +83,10 @@ int gl_Loop()
 
 	processInput(movement, angle, zoom);
 
-	LoadModel();
-
-	shader.setMat4("model", model);
-	shader.setMat4("projection", projection);
-
+	projection = glm::perspective(glm::radians(camera.Zoom), 800.0f / 600.0f, 0.1f, 100.0f);  
 	view = camera.GetViewMatrix();
 
+	shader.setMat4("projection", projection);
 	shader.setMat4("view", view);
 	
 	// unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
@@ -170,21 +167,38 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void processInput(int movement, int angle, int zoom)
 {
-	std::cout << movement << '\n';
+	// std::cout << movement << ' ' << angle << ' ' << zoom << '\n';
 	if (movement >= 8) {
 		movement -= 8;
-		camera.ProcessMovement(RIGHT, 0.1f);
+		camera.ProcessMovement(RIGHT, 0.01f);
 	}
 	if (movement >= 4) {
 		movement -= 4;
-		camera.ProcessMovement(BACKWARD, 0.1f);
+		camera.ProcessMovement(BACKWARD, 0.01f);
 	}
 	if (movement >= 2) {
 		movement -= 2;
-		camera.ProcessMovement(FORWARD, 0.1f);
+		camera.ProcessMovement(FORWARD, 0.01f);
 	}
-	if (movement >= 1) {
-		movement -= 1;
-		camera.ProcessMovement(LEFT, 0.1f);
+	if (movement >= 1) camera.ProcessMovement(LEFT, 0.01f);
+
+	if (angle >= 8) {
+		angle -= 8;
+		camera.ProcessAngle(RIGHT, 0.1f);
 	}
+	if (angle >= 4) {
+		angle -= 4;
+		camera.ProcessAngle(BACKWARD, 0.1f);
+	}
+	if (angle >= 2) {
+		angle -= 2;
+		camera.ProcessAngle(FORWARD, 0.1f);
+	}
+	if (angle >= 1) camera.ProcessAngle(LEFT, 0.1f);
+
+	if (zoom >= 2) {
+		zoom -= 2;
+		camera.ProcessZoom(IN, 0.1f);
+	}
+	if (zoom >= 1) camera.ProcessZoom(OUT, 0.1f);
 }

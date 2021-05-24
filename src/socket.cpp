@@ -30,11 +30,9 @@ void on_message(server* s, websocketpp::connection_hdl hdl, server::message_ptr 
     rapidjson::Value& angleValue = d["angle"];
     rapidjson::Value& zoomValue = d["zoom"];
 
-    if (movementValue != NULL) {
-        movement = movementValue.GetInt();
-        angle = angleValue.GetInt();
-        zoom = zoomValue.GetInt();
-    }
+    movement = movementValue.GetInt();
+    angle = angleValue.GetInt();
+    zoom = zoomValue.GetInt();
 
     int rt = gl_Loop();
 
@@ -64,6 +62,7 @@ void on_open(server* s, websocketpp::connection_hdl hdl)
 
 void on_close(server* s, websocketpp::connection_hdl hdl)
 {
+    camera.ResetPosition();
     gl_Close();
     // s->stop_listening();   
 }

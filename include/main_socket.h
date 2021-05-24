@@ -1,5 +1,6 @@
 #include "../include/main.h"
 #include "../include/shader.h"
+#include "../include/camera.h"
 
 #define WIDTH 1200
 #define HEIGHT 800
@@ -18,3 +19,5 @@ extern char pixels[2880000];
 extern int movement;
 extern int angle;
 extern int zoom;
+
+extern Camera camera;
